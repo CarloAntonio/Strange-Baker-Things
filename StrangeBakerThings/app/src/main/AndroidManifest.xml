@@ -19,8 +19,28 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeDetails">
+        <activity
+            android:name=".RecipeDetails.RecipeDetails"
+            android:configChanges="orientation|screenSize">
         </activity>
+        <activity android:name=".RecipeDetails.StepDetails">
+        </activity>
+
+        <receiver android:name=".RecipeWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_provider_info"/>
+        </receiver>
+
+        <service android:name=".UpdateWidgetService"/>
+
+        <service android:name=".WidgetService"
+                 android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>

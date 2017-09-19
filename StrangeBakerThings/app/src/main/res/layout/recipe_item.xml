@@ -8,8 +8,9 @@
         android:id="@+id/recipe_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Cookies and Cream Milkshake"
+        android:textSize="24sp"
         android:background="@drawable/bordered_rectangle"
+        android:textColor="@android:color/white"
         android:layout_marginTop="16dp"
         android:gravity="center"/>
 
