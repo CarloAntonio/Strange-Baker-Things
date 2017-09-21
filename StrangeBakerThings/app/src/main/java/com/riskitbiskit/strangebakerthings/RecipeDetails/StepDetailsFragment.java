@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -48,6 +49,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.riskitbiskit.strangebakerthings.MainActivityFiles.MainActivity;
 import com.riskitbiskit.strangebakerthings.R;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +75,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private int requestedStep;
     private TextView stepTextView;
     private boolean isTwoPanel;
+    private ImageView thumbnailIV;
 
     List<Instructions> mInstructions;
 
@@ -88,6 +91,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         previousButton = rootView.findViewById(R.id.previous_button);
         nextButton = rootView.findViewById(R.id.next_button);
         stepTextView = rootView.findViewById(R.id.step_instructions_frag_tv);
+        thumbnailIV = rootView.findViewById(R.id.exoplayer_replacement_thumbnail);
 
         mInstructions = new ArrayList<>();
 
@@ -246,11 +250,19 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private void setupExoPlayer() {
         //check to see if there is a videoUrl
         if (!mInstructions.get(requestedStep).getVideoUrl().equals("")) {
+            thumbnailIV.setVisibility(View.INVISIBLE);
             mExoPlayerView.setVisibility(View.VISIBLE);
             initializePlayer(Uri.parse(mInstructions.get(requestedStep).getVideoUrl()));
         } else if (!mInstructions.get(requestedStep).getThumbnailUrl().equals("")) {
-            mExoPlayerView.setVisibility(View.VISIBLE);
-            showThumbnail(mInstructions.get(requestedStep).getThumbnailUrl());
+            if (mInstructions.get(requestedStep).getThumbnailUrl().contains(".mp4")) {
+                thumbnailIV.setVisibility(View.INVISIBLE);
+                mExoPlayerView.setVisibility(View.VISIBLE);
+                showThumbnail(mInstructions.get(requestedStep).getThumbnailUrl());
+            } else {
+                thumbnailIV.setVisibility(View.VISIBLE);
+                mExoPlayerView.setVisibility(View.INVISIBLE);
+                imageViewThumbnail(mInstructions.get(requestedStep).getThumbnailUrl());
+            }
         } else {
             mExoPlayerView.setVisibility(View.GONE);
         }
@@ -260,6 +272,11 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private void setupInstructions() {
         //set up instructions
         stepTextView.setText(mInstructions.get(requestedStep).getInstruction());
+    }
+
+    //method for handling images
+    private void imageViewThumbnail(String thumbnailUrl) {
+        Picasso.with(getContext()).load(thumbnailUrl).into(thumbnailIV);
     }
 
     //Refactored from Media Playback Lesson (Advance Android), shows Thumbnail on Exoplayer
