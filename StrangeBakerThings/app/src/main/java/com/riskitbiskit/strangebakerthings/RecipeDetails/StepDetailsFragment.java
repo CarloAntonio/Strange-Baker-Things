@@ -107,6 +107,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         } else if (isTwoPanel) {
             makeVolleyRequest();
         } else {
+            //happening here
             recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
             requestedStep = intent.getIntExtra(RecipeDetails.INSTRUCTION_STEP, 0);
 
@@ -250,12 +251,16 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private void setupExoPlayer() {
         //check to see if there is a videoUrl
         if (!mInstructions.get(requestedStep).getVideoUrl().equals("")) {
-            thumbnailIV.setVisibility(View.INVISIBLE);
+            if (thumbnailIV != null) {
+                thumbnailIV.setVisibility(View.INVISIBLE);
+            }
             mExoPlayerView.setVisibility(View.VISIBLE);
             initializePlayer(Uri.parse(mInstructions.get(requestedStep).getVideoUrl()));
         } else if (!mInstructions.get(requestedStep).getThumbnailUrl().equals("")) {
             if (mInstructions.get(requestedStep).getThumbnailUrl().contains(".mp4")) {
-                thumbnailIV.setVisibility(View.INVISIBLE);
+                if (thumbnailIV != null) {
+                    thumbnailIV.setVisibility(View.INVISIBLE);
+                }
                 mExoPlayerView.setVisibility(View.VISIBLE);
                 showThumbnail(mInstructions.get(requestedStep).getThumbnailUrl());
             } else {

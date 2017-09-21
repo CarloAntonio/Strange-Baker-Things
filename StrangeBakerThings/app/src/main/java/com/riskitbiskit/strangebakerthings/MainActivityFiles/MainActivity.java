@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject currentRecipe = response.getJSONObject(i);
                         int recipeId = currentRecipe.getInt("id");
                         String recipeName = currentRecipe.getString("name");
-                        recipes.add(new Recipe(recipeId, recipeName));
+                        String recipeImage = currentRecipe.getString("image");
+                        recipes.add(new Recipe(recipeId, recipeName, recipeImage));
                         recipeNames.add(recipeName);
                     }
 

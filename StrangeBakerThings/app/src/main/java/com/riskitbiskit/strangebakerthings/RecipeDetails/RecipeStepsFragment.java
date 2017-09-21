@@ -2,15 +2,12 @@ package com.riskitbiskit.strangebakerthings.RecipeDetails;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Point;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +33,7 @@ import java.util.ArrayList;
 public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListItemClickListener {
 
     public static final String VOLLEY_TAG = "volleyTag";
+    public static final String SAVED_RV = "savedRV";
 
     RequestQueue mRequestQueue;
     ArrayList<Ingredient> ingredients;
@@ -45,8 +43,12 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
     int recipeNumber;
     LinearLayout mLinearLayout;
     TextView ingredientsListTV;
+    LinearLayoutManager mLinearLayoutManager;
+    int rvPostionIndex;
+    int topView;
 
     OnRecipeClickListener mCallback;
+    private Parcelable mListState;
 
     public interface  OnRecipeClickListener {
         void onRecipeClicked(int position);
@@ -63,16 +65,15 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
 
         Intent intent = getActivity().getIntent();
 
-        //i will always be id of recipe minus 1
-        recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
+        if (intent.hasExtra(MainActivity.RECIPE_INDEX_NUMBER)) {
+            recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
+        }
 
         ingredients = new ArrayList<>();
         instructions = new ArrayList<>();
 
         mRecyclerView = rootView.findViewById(R.id.ingredient_steps_rv);
         ingredientsListTV = rootView.findViewById(R.id.ingredients_list);
-
-        layoutCorrection();
 
         mRequestQueue = Volley.newRequestQueue(getContext());
 
@@ -148,7 +149,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
 
         mRecyclerView.setAdapter(mStepsAdapter);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (mLinearLayoutManager == null) {
+            mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        }
+
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         return rootView;
     }
@@ -165,6 +170,29 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_RV, mLinearLayoutManager.onSaveInstanceState());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable(SAVED_RV);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mListState != null) {
+            mLinearLayoutManager.onRestoreInstanceState(mListState);
+        }
+    }
+
+    @Override
     public void onListItemClick(int clickedItemIndex) {
         mCallback.onRecipeClicked(clickedItemIndex);
     }
@@ -174,56 +202,6 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
         super.onStop();
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(VOLLEY_TAG);
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        layoutCorrection();
-    }
-
-    //Manual Correction for orientation and screen size, code required android:configChanges="orientation|screenSize" in android manifest,
-    //only solution I could think of without making a provider (wanted to see if I could do it without one).
-    private void layoutCorrection() {
-
-        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-
-        if (dpWidth < 600) {
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                mLinearLayout.setOrientation(LinearLayout.VERTICAL);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(16, 16, 16, 0);
-                ingredientsListTV.setLayoutParams(params);
-
-                LinearLayout.LayoutParams rvLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                rvLayoutParams.setMargins(0, 16, 0, 0);
-                mRecyclerView.setLayoutParams(rvLayoutParams);
-
-            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
-                params.setMargins(16, 16, 16, 16);
-                ingredientsListTV.setLayoutParams(params);
-
-                LinearLayout.LayoutParams rvLayoutParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
-                rvLayoutParams.setMargins(0, 16, 0, 0);
-                mRecyclerView.setLayoutParams(rvLayoutParams);
-            }
-        } else {
-            mLinearLayout.setOrientation(LinearLayout.VERTICAL);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(16, 16, 16, 0);
-            ingredientsListTV.setLayoutParams(params);
-
-            LinearLayout.LayoutParams rvLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            rvLayoutParams.setMargins(0, 16, 0, 0);
-            mRecyclerView.setLayoutParams(rvLayoutParams);
         }
     }
 }

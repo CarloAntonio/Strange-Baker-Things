@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.riskitbiskit.strangebakerthings.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -33,8 +35,26 @@ public class RecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         Recipe currentRecipe = getItem(position);
 
+        ImageView recipeImage = listItemView.findViewById(R.id.recipe_image);
         TextView recipeNameTV = listItemView.findViewById(R.id.recipe_name);
-        recipeNameTV.setText(currentRecipe.getName());
+
+        if (!currentRecipe.getImage().equals("")) {
+            if (recipeImage != null) {
+                recipeImage.setVisibility(View.VISIBLE);
+            }
+            if (recipeNameTV != null) {
+                recipeNameTV.setVisibility(View.INVISIBLE);
+            }
+            Picasso.with(getContext()).load(currentRecipe.getImage()).into(recipeImage);
+        } else {
+            if (recipeImage != null) {
+                recipeImage.setVisibility(View.INVISIBLE);
+            }
+            if (recipeNameTV != null) {
+                recipeNameTV.setVisibility(View.VISIBLE);
+            }
+            recipeNameTV.setText(currentRecipe.getName());
+        }
 
         return listItemView;
     }

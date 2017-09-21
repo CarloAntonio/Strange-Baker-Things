@@ -1,12 +1,14 @@
 package com.riskitbiskit.strangebakerthings.MainActivityFiles;
 
 public class Recipe {
-    int id;
-    String name;
+    private int id;
+    private String name;
+    private String image;
 
-    public Recipe(int id, String name) {
+    public Recipe(int id, String name, String image) {
         this.id = id;
         this.name = name;
+        this.image = image;
     }
 
     public int getId() {
@@ -15,5 +17,9 @@ public class Recipe {
 
     public String getName() {
         return name;
+    }
+
+    public String getImage() {
+        return image;
     }
 }

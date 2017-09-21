@@ -30,6 +30,7 @@ public class RecipeDetails extends AppCompatActivity implements RecipeStepsFragm
     public static final String LOG_TAG = RecipeDetails.class.getSimpleName();
 
     public static final String INSTRUCTION_STEP = "instructionsStep";
+    public static final String RECIPE_SAVED_STATE = "recipeSavedState";
 
     private int recipeNumber;
     private boolean twoPanel;
@@ -66,40 +67,49 @@ public class RecipeDetails extends AppCompatActivity implements RecipeStepsFragm
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(RECIPE_SAVED_STATE)) {
+                recipeNumber = savedInstanceState.getInt(RECIPE_SAVED_STATE);
+            }
+        }
+
         if (findViewById(R.id.two_panel_layout) != null) {
             twoPanel = true;
 
             recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
 
-            //Set-up recipe steps fragment
-            RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
+            if (savedInstanceState == null) {
+                //Set-up recipe steps fragment
+                RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentManager fragmentManager = getSupportFragmentManager();
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_steps_container, recipeStepsFragment)
-                    .commit();
+                fragmentManager.beginTransaction()
+                        .add(R.id.recipe_steps_container, recipeStepsFragment)
+                        .commit();
 
-            //Set-up Step Details Fragment
-            StepDetailsFragment stepDetailsFragment = new StepDetailsFragment();
+                //Set-up Step Details Fragment
+                StepDetailsFragment stepDetailsFragment = new StepDetailsFragment();
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.step_details_frag_container, stepDetailsFragment)
-                    .commit();
-
-
+                fragmentManager.beginTransaction()
+                        .add(R.id.step_details_frag_container, stepDetailsFragment)
+                        .commit();
+            }
         } else {
             twoPanel = false;
 
-            recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
+            if (savedInstanceState == null) {
 
-            RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
+                recipeNumber = intent.getIntExtra(MainActivity.RECIPE_INDEX_NUMBER, 0);
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+                RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.recipe_steps_container, recipeStepsFragment)
-                    .commit();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                fragmentManager.beginTransaction()
+                        .add(R.id.recipe_steps_container, recipeStepsFragment)
+                        .commit();
+            }
         }
     }
 
@@ -180,6 +190,6 @@ public class RecipeDetails extends AppCompatActivity implements RecipeStepsFragm
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putInt(RECIPE_SAVED_STATE, recipeNumber);
     }
-
 }

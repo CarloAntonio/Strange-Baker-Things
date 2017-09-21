@@ -7,4 +7,5 @@
     <string name="previous_step">Previous Step</string>
     <string name="next_step">Next Step</string>
     <string name="next_recipe">Next Recipe</string>
+    <string name="recipe_overview_image">Recipe OverView Image</string>
 </resources>
