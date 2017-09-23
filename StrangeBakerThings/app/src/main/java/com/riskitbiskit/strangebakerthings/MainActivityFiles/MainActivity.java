@@ -9,6 +9,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecipeRVAdapter.ListItemClicked {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -46,19 +49,20 @@ public class MainActivity extends AppCompatActivity {
     public static final String DATA_URL = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
 
     RequestQueue mRequestQueue;
-    RecipeArrayAdapter mRecipeArrayAdapter;
     List<Recipe> recipes;
     SimpleIdlingResource mIdlingResource;
 
     //Menu Variables
     private List<String> recipeNames;
+    private RecipeRVAdapter rvAdpter;
     private ArrayAdapter<String> arrayAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
+    GridLayoutManager gridLayoutManager;
 
-    //Butterknife Variables
-    @BindView(R.id.recipe_list_gv)
-    GridView recipeListGV;
+
+    @BindView(R.id.recipe_list_rv)
+    RecyclerView recipeListRV;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                         recipeNames.add(recipeName);
                     }
 
-                    mRecipeArrayAdapter.notifyDataSetChanged();
+                    rvAdpter.notifyDataSetChanged();
 
                     //Sets up hamburger menu
                     //Refactored code from: https://developer.android.com/training/implementing-navigation/nav-drawer.html
@@ -131,19 +135,25 @@ public class MainActivity extends AppCompatActivity {
 
         mRequestQueue.add(jsonArrayRequest);
 
-        mRecipeArrayAdapter = new RecipeArrayAdapter(this, R.layout.recipe_item, recipes);
+        //Source: https://stackoverflow.com/questions/6465680/how-to-determine-the-screen-width-in-terms-of-dp-or-dip-at-runtime-in-android
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 
-        recipeListGV.setAdapter(mRecipeArrayAdapter);
-
-        recipeListGV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(getBaseContext(), RecipeDetails.class);
-                intent.putExtra(RECIPE_INDEX_NUMBER, position);
-                intent.putStringArrayListExtra(RECIPE_LIST, (ArrayList<String>) recipeNames);
-                startActivity(intent);
+        if (dpWidth < 600) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                gridLayoutManager = new GridLayoutManager(this, 1);
+            } else {
+                gridLayoutManager = new GridLayoutManager(this, 2);
             }
-        });
+        } else {
+            gridLayoutManager = new GridLayoutManager(this, 3);
+        }
+
+        recipeListRV.setLayoutManager(gridLayoutManager);
+
+        rvAdpter = new RecipeRVAdapter(this, recipes, this);
+
+        recipeListRV.setAdapter(rvAdpter);
     }
 
     private void setupMenuItems() {
@@ -192,5 +202,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+        Intent intent = new Intent(this, RecipeDetails.class);
+        intent.putExtra(RECIPE_INDEX_NUMBER, clickedItemIndex);
+        intent.putStringArrayListExtra(RECIPE_LIST, (ArrayList<String>) recipeNames);
+        startActivity(intent);
     }
 }

@@ -44,8 +44,6 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
     LinearLayout mLinearLayout;
     TextView ingredientsListTV;
     LinearLayoutManager mLinearLayoutManager;
-    int rvPostionIndex;
-    int topView;
 
     OnRecipeClickListener mCallback;
     private Parcelable mListState;

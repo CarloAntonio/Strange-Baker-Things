@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,8 +14,8 @@
         android:layout_height="match_parent"
         tools:context="com.riskitbiskit.strangebakerthings.MainActivityFiles.MainActivity">
 
-        <GridView
-            android:id="@+id/recipe_list_gv"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recipe_list_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
