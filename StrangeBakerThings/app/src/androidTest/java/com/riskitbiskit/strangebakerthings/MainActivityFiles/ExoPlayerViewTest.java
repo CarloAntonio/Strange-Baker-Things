@@ -49,7 +49,7 @@ public class ExoPlayerViewTest {
     }
 
     @Test
-    public void mockTest() {
+    public void exoPlayerViewTest() {
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recipe_list_rv), isDisplayed()));
         recyclerView.perform(actionOnItemAtPosition(0, click()));

@@ -36,7 +36,7 @@ public class MenuTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void test() {
+    public void menuTest() {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open Navigation"),
                         withParent(allOf(withId(R.id.action_bar),

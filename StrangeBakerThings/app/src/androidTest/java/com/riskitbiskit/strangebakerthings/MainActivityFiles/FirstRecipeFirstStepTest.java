@@ -35,7 +35,7 @@ public class FirstRecipeFirstStepTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void recyclerViewTest() {
+    public void firstRecipeFirstStepTest() {
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recipe_list_rv), isDisplayed()));
         recyclerView.perform(actionOnItemAtPosition(0, click()));

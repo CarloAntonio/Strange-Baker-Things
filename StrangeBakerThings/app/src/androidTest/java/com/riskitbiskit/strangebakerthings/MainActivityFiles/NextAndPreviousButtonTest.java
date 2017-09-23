@@ -36,7 +36,7 @@ public class NextAndPreviousButtonTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void mockTest() {
+    public void nextAndPreviousButtonTest() {
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recipe_list_rv), isDisplayed()));
         recyclerView.perform(actionOnItemAtPosition(2, click()));
