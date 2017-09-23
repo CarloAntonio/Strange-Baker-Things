@@ -1,11 +1,14 @@
 package com.riskitbiskit.strangebakerthings;
 
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.action.ViewActions.click;
 
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -36,7 +39,9 @@ public class MainActivityIdlingResourceTest {
 
     @Test
     public void idlingResourceTest() {
-        onData(anything()).inAdapterView(withId(R.id.recipe_list_gv)).atPosition(0).perform(click());
+        onView(ViewMatchers.withId(R.id.recipe_list_rv))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0,
+                        click()));
     }
 
     @After

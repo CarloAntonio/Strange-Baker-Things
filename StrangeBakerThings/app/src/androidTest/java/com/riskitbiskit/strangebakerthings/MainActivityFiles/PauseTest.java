@@ -28,13 +28,14 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ExoPlayerViewTest {
+public class PauseTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -49,10 +50,10 @@ public class ExoPlayerViewTest {
     }
 
     @Test
-    public void mockTest() {
+    public void pauseTest() {
         ViewInteraction recyclerView = onView(
                 allOf(withId(R.id.recipe_list_rv), isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(0, click()));
+        recyclerView.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.ingredient_steps_rv),
@@ -61,15 +62,19 @@ public class ExoPlayerViewTest {
                         isDisplayed()));
         recyclerView2.perform(actionOnItemAtPosition(0, click()));
 
-        ViewInteraction frameLayout = onView(
-                allOf(withId(R.id.exoplayer),
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withId(R.id.exo_pause), withContentDescription("Pause"), isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction imageButton = onView(
+                allOf(withId(R.id.exo_play), withContentDescription("Play"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         0),
-                                0),
+                                2),
                         isDisplayed()));
-        frameLayout.check(matches(isDisplayed()));
+        imageButton.check(matches(isDisplayed()));
 
     }
 

@@ -1,11 +1,14 @@
 package com.riskitbiskit.strangebakerthings;
 
 import android.app.Activity;
+import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.riskitbiskit.strangebakerthings.MainActivityFiles.MainActivity;
 
 import static android.support.test.espresso.Espresso.onData;
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.Intents.intended;
@@ -37,7 +40,9 @@ public class MainActivityIntentTest {
 
     @Test
     public void clickGridViewItem_Opens_RecipeDetails() {
-        onData(anything()).inAdapterView(withId(R.id.recipe_list_gv)).atPosition(0).perform(click());
+        onView(ViewMatchers.withId(R.id.recipe_list_rv))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0,
+                        click()));
 
         intended(
                 hasExtra(MainActivity.RECIPE_INDEX_NUMBER, 0)

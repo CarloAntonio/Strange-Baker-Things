@@ -65,6 +65,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     public static final String TAG = "tag";
     public static final String LIST_INDEX = "index";
     public static final String INSTRUCTIONS_LIST = "instructions";
+    public static final String PLAYER_POSITION = "playerPosition";
 
     private SimpleExoPlayerView mExoPlayerView;
     private SimpleExoPlayer mExoPlayer;
@@ -76,6 +77,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     private TextView stepTextView;
     private boolean isTwoPanel;
     private ImageView thumbnailIV;
+    private long playerPosition;
 
     List<Instructions> mInstructions;
 
@@ -100,6 +102,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         if (savedInstanceState != null) {
             requestedStep = savedInstanceState.getInt(LIST_INDEX);
             mInstructions = savedInstanceState.getParcelableArrayList(INSTRUCTIONS_LIST);
+            playerPosition = savedInstanceState.getLong(PLAYER_POSITION);
 
             setupInstructions();
             setupExoPlayer();
@@ -215,18 +218,25 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
                     getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
+
+            if (playerPosition != 0L) {
+                mExoPlayer.seekTo(playerPosition);
+            }
+
             mExoPlayer.setPlayWhenReady(true);
         }
     }
 
     //method for cleaning up ExoPlayer
     private void releasePlayer() {
-//        mNotificationManager.cancelAll();
         if (mExoPlayer != null) {
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
         }
+
+        //clean up playerPosition
+        playerPosition = 0L;
     }
 
     //method for setting up add or remove buttons depending on step
@@ -381,6 +391,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(INSTRUCTIONS_LIST, (ArrayList<Instructions>) mInstructions);
         outState.putInt(LIST_INDEX, requestedStep);
+
+        playerPosition = mExoPlayer.getCurrentPosition();
+        outState.putLong(PLAYER_POSITION, playerPosition);
     }
 
     @Override

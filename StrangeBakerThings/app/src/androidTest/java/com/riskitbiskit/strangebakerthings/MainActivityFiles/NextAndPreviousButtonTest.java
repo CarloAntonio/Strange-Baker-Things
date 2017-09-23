@@ -36,20 +36,17 @@ public class NextAndPreviousButtonTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void nextAndPreviousButtonTest() {
-        ViewInteraction frameLayout = onView(
-                allOf(childAtPosition(
-                        withId(R.id.recipe_list_gv),
-                        2),
-                        isDisplayed()));
-        frameLayout.perform(click());
-
+    public void mockTest() {
         ViewInteraction recyclerView = onView(
+                allOf(withId(R.id.recipe_list_rv), isDisplayed()));
+        recyclerView.perform(actionOnItemAtPosition(2, click()));
+
+        ViewInteraction recyclerView2 = onView(
                 allOf(withId(R.id.ingredient_steps_rv),
                         withParent(allOf(withId(R.id.view_steps_frag),
                                 withParent(withId(R.id.recipe_steps_container)))),
                         isDisplayed()));
-        recyclerView.perform(actionOnItemAtPosition(1, click()));
+        recyclerView2.perform(actionOnItemAtPosition(1, click()));
 
         ViewInteraction button = onView(
                 allOf(withId(R.id.previous_button),

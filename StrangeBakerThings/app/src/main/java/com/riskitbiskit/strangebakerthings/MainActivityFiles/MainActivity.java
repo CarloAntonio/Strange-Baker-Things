@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -129,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements RecipeRVAdapter.L
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(LOG_TAG, error + "");
+                Toast.makeText(getBaseContext(), "Error Fetching Data", Toast.LENGTH_SHORT).show();
             }
         }
         );

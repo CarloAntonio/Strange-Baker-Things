@@ -128,6 +128,11 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
                     }
 
                     mStepsAdapter.notifyDataSetChanged();
+
+                    if (mListState != null) {
+                        mLinearLayoutManager.onRestoreInstanceState(mListState);
+                    }
+
                 } catch (JSONException JSONE) {
                     JSONE.printStackTrace();
                 }
@@ -179,14 +184,6 @@ public class RecipeStepsFragment extends Fragment implements StepsAdapter.ListIt
 
         if (savedInstanceState != null) {
             mListState = savedInstanceState.getParcelable(SAVED_RV);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mListState != null) {
-            mLinearLayoutManager.onRestoreInstanceState(mListState);
         }
     }
 
