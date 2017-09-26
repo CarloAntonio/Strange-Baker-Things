@@ -1,21 +1,13 @@
 package com.riskitbiskit.strangebakerthings.RecipeDetails;
 
-import android.content.AsyncTaskLoader;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -234,9 +226,6 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
             mExoPlayer.release();
             mExoPlayer = null;
         }
-
-        //clean up playerPosition
-        playerPosition = 0L;
     }
 
     //method for setting up add or remove buttons depending on step
@@ -386,6 +375,15 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mInstructions.size() != 0) {
+            initializePlayer(Uri.parse(mInstructions.get(requestedStep).getVideoUrl()));
+        }
+    }
+
     //save current list and index during device rotation
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -404,5 +402,13 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         }
 
         releasePlayer();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        //clean up playerPosition
+        playerPosition = 0L;
     }
 }
