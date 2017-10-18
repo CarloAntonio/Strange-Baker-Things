@@ -27,7 +27,7 @@ Main Screen (Tablet) </br>
 <img src="https://user-images.githubusercontent.com/25759516/31746601-15a4e62c-b41d-11e7-8c50-bbb9051da8ff.png" width="800">
 
 Two Panel (Tablet) </br>
-<img src="https://user-images.githubusercontent.com/25759516/31746601-15a4e62c-b41d-11e7-8c50-bbb9051da8ff.png" width="800">
+<img src="https://user-images.githubusercontent.com/25759516/31746604-17f57bb2-b41d-11e7-825b-9750bdf6e14f.png" width="800">
 
 ### Libraries Used
 * Butterknife
